@@ -1,0 +1,44 @@
+# Vivado generated files
+
+.cache/
+.hw/
+.ip_user_files/
+.sim/
+.gen/
+
+# Vivado project output
+
+*.jou
+*.log
+*.str
+*.pb
+*.backup
+*.dmp
+
+# Generated simulation files
+
+webtalk/
+webtalk.jou
+usage_statistics_webtalk.xml
+
+# Generated runs
+
+runs/
+
+# IDE / editor files
+
+.vscode/
+.idea/
+
+# OS generated files
+
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Python cache (if used later)
+
+__pycache__/
+*.py[cod]
+.venv/
+venv/
