@@ -7,12 +7,15 @@ logic [1:0] model_pointer;
 logic [1:0] model_next_pointer;
 logic [3:0] random_request;
 logic [15:0] request_seen;
+logic [3:0] grant_seen;
+logic [3:0] pointer_seen;
 
 round_robin_arbiter dut(
 .clk(clk),
 .rst(rst),
 .request(request),
 .grant(grant));
+
 
 task test_case(
 input logic [3:0] req);
@@ -22,9 +25,13 @@ reference_model(req,expected);
 #1;
 if (grant !== expected)
     $error("Test failed: request=%b, grant=%b, expected=%b", request, grant, expected);
-else
+else begin
     $display("Test passed: request=%b, grant=%b, expected=%b", request, grant, expected);
+    grant_seen=grant_seen|grant;
+end
 model_pointer=model_next_pointer;
+@(posedge clk);
+pointer_seen[dut.pointer] = 1'b1;
 endtask
 
 
@@ -62,8 +69,11 @@ clk=0;
 rst=1;
 model_pointer=0;
 request=4'b0000;
+grant_seen=4'b0000;
+pointer_seen=4'b0000;
 request_seen=16'b0;
 
+#10;
 rst=0;
 // No requests
 @(negedge clk);
@@ -109,6 +119,28 @@ if (request_seen == 16'b1111_1111_1111_1111)
     $display("All 16 request patterns were covered!");
 else
     $display("Some request patterns were not covered.");
+
+
+if (grant_seen==4'b1111)
+    $display("All 4 requester won at least once");
+else begin
+    $display("Some requester never won");
+    for (integer i=0;i<4;i++) begin
+        if(grant_seen[i]==1'b0)
+            $display("Requester %0d never won",i);
+    end
+end
+
+if (pointer_seen == 4'b1111)
+    $display("All 4 pointer states were covered!");
+else begin
+    $display("Some pointer states were not covered.");
+    for (int i = 0; i < 4; i++) begin
+        if (pointer_seen[i] == 1'b0)
+            $display("Pointer state %0d was not reached", i);
+    end
+end
+
 
 $finish;
 end
