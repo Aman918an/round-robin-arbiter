@@ -5,12 +5,29 @@ input logic [3:0] grant,
 input logic [3:0] request,
 input logic [1:0] pointer
 );
+assert property(
+@(posedge clk)
+rst |=> pointer==2'b00
+);
+
 assert property (@(posedge clk) $onehot0(grant));    
 
 assert property (
 @(posedge clk)
 disable iff(rst)
 (request!=4'b0000) |-> $onehot(grant)
+);
+
+assert property (
+@(posedge clk)
+disable iff(rst)
+(grant & ~request) == 4'b0000
+);
+
+assert property(
+@(posedge clk)
+disable iff(rst)
+(request==4'b0000) |=> pointer==$past(pointer)
 );
 
 assert property (
