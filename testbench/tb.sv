@@ -14,8 +14,17 @@ round_robin_arbiter dut(
 .clk(clk),
 .rst(rst),
 .request(request),
-.grant(grant));
+.grant(grant)
+);
 
+
+arbiter_assertions assertions_inst(
+.clk(clk),
+.rst(rst),
+.grant(grant),
+.request(request),
+.pointer(dut.pointer)
+);
 
 task test_case(
 input logic [3:0] req);
@@ -63,8 +72,6 @@ always #5 clk=~clk;
 
 
 initial begin
-//logic [3:0] expected_grant;
-
 clk=0;
 rst=1;
 model_pointer=0;
@@ -74,6 +81,7 @@ pointer_seen=4'b0000;
 request_seen=16'b0;
 
 #10;
+
 rst=0;
 // No requests
 @(negedge clk);
