@@ -6,7 +6,7 @@ This project is being developed incrementally as part of an FPGA/RTL portfolio, 
 
 ## Current Status
 
-**RTL design, simulation, SVA verification, and formal verification completed**
+**RTL design, simulation, SVA verification, formal verification, synthesis, static timing analysis, and power estimation completed**
 
 * Round-robin arbitration for 4 requesters
 * Pointer-based circular priority
@@ -23,6 +23,10 @@ This project is being developed incrementally as part of an FPGA/RTL portfolio, 
 * Intentional DUT bug injection
 * Formal verification using SymbiYosys
 * Formal behavioral property checking
+* FPGA synthesis
+* Static timing analysis
+* Resource utilization analysis
+* Vivado power estimation
 
 ### Verification Results
 
@@ -59,6 +63,9 @@ round-robin-arbiter/
 │
 ├── assertions/
 │   └── arbiter_assertions.sv
+│
+├── constraints/
+│   └── round_robin_arbiter.xdc
 │
 ├── formal/
 │   ├── arbiter.sby
@@ -100,7 +107,8 @@ The verification process includes:
 6. Grant-state coverage
 7. Pointer-state coverage
 8. SystemVerilog Assertions
-9. Formal verification
+9. Intentional bug injection
+10. Formal verification
 
 ## SystemVerilog Assertions
 
@@ -221,6 +229,8 @@ The formal environment verifies the circular priority transitions:
 
 when the next requester is active.
 
+The formal harness uses an explicit reset assumption and a validity flag to ensure that temporal checks using `$past()` are only evaluated after a valid previous cycle exists.
+
 These properties are checked exhaustively over the formal state space rather than relying on a finite set of simulation test vectors.
 
 ## Intentional Bug Injection
@@ -269,6 +279,52 @@ SVA
 Formal Verification
 ```
 
+## Synthesis, Timing & Power Results
+
+Implementation and static timing analysis were performed for the target device:
+
+```text
+Device: xc7a12ticsg325-1L
+Clock constraint: 10.000 ns (100 MHz)
+```
+
+### Resource Utilization
+
+| Resource | Used | Available | Utilization |
+|---|---:|---:|---:|
+| LUT | 7 | 8,000 | 0.09% |
+| FF | 2 | 16,000 | 0.01% |
+| I/O | 10 | 150 | 6.67% |
+
+### Static Timing Analysis
+
+| Metric | Result |
+|---|---:|
+| WNS | 7.805 ns |
+| TNS | 0.000 ns |
+| WHS | 0.467 ns |
+| THS | 0.000 ns |
+| Failing setup endpoints | 0 |
+| Failing hold endpoints | 0 |
+| Worst setup path delay | 2.195 ns |
+| Approx. Fmax from worst setup path | 455.6 MHz |
+
+Vivado reported that all user-specified timing constraints were met.
+
+The approximately 455.6 MHz figure is derived from the reported worst setup path delay and should be interpreted as an STA-based estimate, not a measured hardware operating frequency.
+
+### Power Estimate
+
+Vivado reported the following estimated on-chip power:
+
+| Power | Result |
+|---|---:|
+| Total On-Chip Power | 0.061 W |
+| Dynamic Power | 0.002 W |
+| Static Power | 0.059 W |
+
+These are Vivado power estimates, not measurements from physical hardware.
+
 ## Verification Flow
 
 ```text
@@ -290,7 +346,11 @@ Intentional Bug Injection
     ↓
 Formal Verification
     ↓
-Synthesis & Static Timing Analysis
+Synthesis
+    ↓
+Static Timing Analysis
+    ↓
+Power Estimation
 ```
 
 ## Tools
@@ -304,10 +364,10 @@ Synthesis & Static Timing Analysis
 
 ## Roadmap
 
-Remaining project work:
+Possible future improvements:
 
-* Synthesis
-* Static timing analysis
-* Resource utilization analysis
-* Final verification summary
-* Final documentation
+* Additional temporal assertions
+* More corner-case properties
+* Parameterize the number of requesters
+* Expand randomized verification
+* Explore alternative arbiter architectures
