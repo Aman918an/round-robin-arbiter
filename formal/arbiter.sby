@@ -1,0 +1,11 @@
+[options]
+mode prove
+
+[engines]
+smtbmc z3
+
+[script]
+read_verilog -formal -sv D:/fpga_projects/round_robin_arbiter/round_robin_arbiter.srcs/sources_1/new/round_robin_arbiter.v
+read_verilog -formal -sv D:/fpga_projects/round_robin_arbiter/formal/formal_assertions.sv
+read_verilog -formal -sv D:/fpga_projects/round_robin_arbiter/formal/formal_tb.sv
+prep -top formal_tb
