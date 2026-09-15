@@ -1,12 +1,12 @@
 # Round-Robin Arbiter — RTL & Verification
 
-A 4-requester synchronous round-robin arbiter implemented in SystemVerilog, with a self-checking verification environment.
+A 4-requester synchronous round-robin arbiter implemented in SystemVerilog, with a self-checking simulation environment, SystemVerilog Assertions (SVA), and formal verification.
 
 This project is being developed incrementally as part of an FPGA/RTL portfolio, with verification methodology added progressively.
 
 ## Current Status
 
-**SVA verification completed**
+**RTL design, simulation, SVA verification, and formal verification completed**
 
 * Round-robin arbitration for 4 requesters
 * Pointer-based circular priority
@@ -21,6 +21,8 @@ This project is being developed incrementally as part of an FPGA/RTL portfolio, 
 * Pointer-state coverage
 * SystemVerilog Assertions (SVA)
 * Intentional DUT bug injection
+* Formal verification using SymbiYosys
+* Formal behavioral property checking
 
 ### Verification Results
 
@@ -30,6 +32,7 @@ This project is being developed incrementally as part of an FPGA/RTL portfolio, 
 * **4/4 pointer states covered**
 * **0 observed mismatches with the correct DUT**
 * **SVA assertions passed with the correct DUT**
+* **Formal assertions passed**
 * Simulation completed successfully through `$finish`
 
 ## Design Overview
@@ -54,17 +57,22 @@ If no requester is active, the pointer remains unchanged.
 ```text
 round-robin-arbiter/
 │
-├── rtl/
-│   └── round_robin_arbiter.sv
-│
-├── tb/
-│   └── tb.sv
-│
 ├── assertions/
 │   └── arbiter_assertions.sv
 │
-├── README.md
-└── .gitignore
+├── formal/
+│   ├── arbiter.sby
+│   ├── formal_assertions.sv
+│   └── formal_tb.sv
+│
+├── rtl/
+│   └── round_robin_arbiter.sv
+│
+├── testbench/
+│   └── tb.sv
+│
+├── .gitignore
+└── README.md
 ```
 
 ## Verification Approach
@@ -82,7 +90,7 @@ Request
                                    Compare
 ```
 
-The verification process currently includes:
+The verification process includes:
 
 1. Directed test cases
 2. Self-checking comparisons
@@ -91,11 +99,12 @@ The verification process currently includes:
 5. Functional coverage of all 16 possible request patterns
 6. Grant-state coverage
 7. Pointer-state coverage
-8. SystemVerilog Assertions (SVA)
+8. SystemVerilog Assertions
+9. Formal verification
 
 ## SystemVerilog Assertions
 
-SVA properties are maintained separately from the DUT in the `assertions/` directory.
+SVA properties are used during RTL simulation to continuously check important design invariants.
 
 ### Grant Validity
 
@@ -133,52 +142,86 @@ assert property (
 );
 ```
 
-This verifies that an active request set results in exactly one granted requester.
-
 ### Pointer Transition
 
-The pointer must advance to the requester immediately following the previous winner.
+The pointer advances to the requester immediately following the winner.
+
+The expected transitions are:
 
 ```text
-Previous Grant       Current Pointer
--------------        --------------
+Previous Grant       Next Pointer
+-------------        ------------
 0001                 01
 0010                 10
 0100                 11
 1000                 00
 ```
 
-The transition is checked using `$past()`.
+The pointer behavior was also tested through intentional bug injection and reference-model-based verification.
 
-For example:
+## Formal Verification
 
-```systemverilog
-assert property (
-    @(posedge clk)
-    disable iff (rst)
-    $past(grant) == 4'b0001 |-> pointer == 2'b01
-);
+Formal verification was performed using **SymbiYosys** with the **Z3 SMT solver**.
+
+The formal environment consists of:
+
+```text
+RTL DUT
+   │
+   ▼
+Formal Testbench
+   │
+   ├── Reset assumptions
+   │
+   ▼
+Formal Assertions
+   │
+   ▼
+SymbiYosys
+   │
+   ▼
+Z3
 ```
 
-The wrap-around case is explicitly verified:
+The formal testbench explicitly handles the initial reset cycle and tracks when `$past()` becomes valid.
+
+### Formally Verified Properties
+
+The following properties were successfully proven:
+
+#### 1. Grant is one-hot or zero
 
 ```systemverilog
-assert property (
-    @(posedge clk)
-    disable iff (rst)
-    $past(grant) == 4'b1000 |-> pointer == 2'b00
-);
+assert ($onehot0(grant));
 ```
 
-### Reset-Aware Assertions
-
-Assertions are disabled while reset is active using:
+#### 2. A non-empty request set produces exactly one grant
 
 ```systemverilog
-disable iff (rst)
+if (request != 4'b0000)
+    assert ($onehot(grant));
 ```
 
-This prevents normal functional properties from being evaluated during reset.
+#### 3. Grant is always a subset of the request
+
+```systemverilog
+assert ((grant & ~request) == 4'b0000);
+```
+
+#### 4. Round-robin rotation
+
+The formal environment verifies the circular priority transitions:
+
+```text
+0 → 1
+1 → 2
+2 → 3
+3 → 0
+```
+
+when the next requester is active.
+
+These properties are checked exhaustively over the formal state space rather than relying on a finite set of simulation test vectors.
 
 ## Intentional Bug Injection
 
@@ -212,15 +255,19 @@ if (actual_requester == 3)
 
 The reference model detected the resulting functional mismatches.
 
-The SVA pointer-transition property also detected the incorrect state transition:
+The verification flow therefore uses multiple complementary techniques:
 
 ```text
-Previous grant = 1000
-Expected pointer = 00
-Actual pointer   = 11
+Reference Model
+      +
+Randomized Simulation
+      +
+Functional Coverage
+      +
+SVA
+      +
+Formal Verification
 ```
-
-This demonstrated that the reference model and SVA provide complementary verification mechanisms.
 
 ## Verification Flow
 
@@ -242,6 +289,8 @@ SystemVerilog Assertions
 Intentional Bug Injection
     ↓
 Formal Verification
+    ↓
+Synthesis & Static Timing Analysis
 ```
 
 ## Tools
@@ -249,16 +298,16 @@ Formal Verification
 * SystemVerilog
 * AMD Vivado
 * Vivado Simulator
+* SymbiYosys
+* Yosys
+* Z3 SMT Solver
 
 ## Roadmap
 
-The project will be extended incrementally with:
+Remaining project work:
 
-* Additional temporal assertions
-* Corner-case properties
-* Formal verification using SymbiYosys
-* Formal counterexample analysis
-* Synthesis and static timing analysis
-* Final verification and documentation
-
-> Formal verification is **not yet implemented** in the current version.
+* Synthesis
+* Static timing analysis
+* Resource utilization analysis
+* Final verification summary
+* Final documentation
