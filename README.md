@@ -90,12 +90,11 @@ round-robin-arbiter/
 │   └── physical_design/
 │
 ├── results/
-│   └── screenshots/
-│       ├── 01_floorplan.png
-│       ├── 02_placement.png
-│       ├── 03_clock_tree.png
-│       ├── 04_global_routing.png
-│       └── 05_final_layout.png
+│   ├── 01_floorplan.png
+│   ├── 02_placement.png
+│   ├── 03_clock_tree.png
+│   ├── 04_global_routing.png
+│   └── 05_final_layout.png
 │
 ├── rtl/
 │   └── round_robin_arbiter.sv
