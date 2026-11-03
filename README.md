@@ -64,38 +64,46 @@ If no requester is active, the pointer remains unchanged.
 ``` text
 round-robin-arbiter/
 │
+├── asics/
+│   ├── constraint/
+│   │   └── arbiter.sdc
+│   ├── final/
+│   │   ├── 6_final.gds
+│   │   └── 6_final.v
+│   ├── pdn/
+│   │   └── grid_strategy.tcl
+│   └── config.mk
+│
 ├── assertions/
 │   └── arbiter_assertions.sv
 │
 ├── constraints/
 │   └── round_robin_arbiter.xdc
 │
-├── docs/
-│   ├── architecture.md
-│   ├── rtl_to_gds.md
-│   └── pdn_investigation.md
-│
 ├── formal/
 │   ├── arbiter.sby
 │   ├── formal_assertions.sv
 │   └── formal_tb.sv
 │
-├── physical_design/
-│   ├── config.mk
-│   └── pdn/
-│
 ├── reports/
+│   ├── physical_design/
+│   │   ├── 4_cts_final.rpt
+│   │   ├── 5_global_route.rpt
+│   │   └── 6_finish.rpt
 │   ├── synthesis/
-│   ├── timing/
-│   └── physical_design/
+│   │   └── synth_stat
+│   └── timing/
+│       ├── 3_global_place.rpt
+│       └── 3_resizer.rpt
 │
 ├── results/
+│   ├── .gitkeep
 │   ├── 01_floorplan.png
 │   ├── 02_placement.png
 │   ├── 03_clock_tree.png
 │   ├── 04_global_routing.png
 │   └── 05_final_layout.png
-│
+│   
 ├── rtl/
 │   └── round_robin_arbiter.sv
 │
@@ -414,10 +422,27 @@ The following stages were inspected using OpenROAD:
 4.  Global routing
 5.  Final layout
 
-Add the corresponding OpenROAD GUI screenshots to this section when they
-are available in the repository. The existing repository structure is
-intentionally retained; screenshot files are not represented as new
-tracked folders here.
+The OpenROAD GUI screenshots are stored in the `screenshots/` directory:
+
+#### 1. Floorplan
+
+![Floorplan](results/01_floorplan.png)
+
+#### 2. Placement
+
+![Placement](results/02_placement.png)
+
+#### 3. Clock Tree Synthesis
+
+![Clock Tree Synthesis](results/03_clock_tree.png)
+
+#### 4. Global Routing
+
+![Global Routing](results/04_global_routing.png)
+
+#### 5. Final Layout
+
+![Final Layout](results/05_final_layout.png)
 
 ### ASIC Implementation Results
 
@@ -452,14 +477,16 @@ corner analysis.
 The initial PDN configuration explored metal1, metal4 and metal7 power
 distribution.
 
-During investigation, metal7 geometry was not generated in the arbiter's
-floorplan database. Experiments included changing the metal7 stripe
-pitch and comparing the configuration with the Nangate45 GCD reference
-design.
+During investigation, **we were unable to get the metal7 layer stripes
+generated in the arbiter's floorplan database**. Metal7 remained absent
+from the arbiter DEF even after trying different stripe pitches and
+comparing the PDN configuration with the Nangate45 GCD reference design,
+where metal7 straps were present.
 
-The final documented arbiter configuration uses metal1 and metal4 power
-distribution. The reason metal7 geometry was absent remains unresolved;
-the small floorplan may be a contributing factor, but this was not
+The final documented arbiter configuration therefore uses metal1 and
+metal4 power distribution; metal7 was not included in the resulting
+arbiter PDN. The reason metal7 geometry was absent remains unresolved.
+The small floorplan may be a contributing factor, but this was not
 established as the root cause.
 
 The current result should not be interpreted as proof of power
