@@ -1,0 +1,209 @@
+
+==========================================================================
+global place report_tns
+--------------------------------------------------------------------------
+tns max 0.00
+
+==========================================================================
+global place report_wns
+--------------------------------------------------------------------------
+wns max 0.00
+
+==========================================================================
+global place report_worst_slack
+--------------------------------------------------------------------------
+worst slack max 9.53
+
+==========================================================================
+global place report_clock_min_period
+--------------------------------------------------------------------------
+clk period_min = 0.47 fmax = 2134.10
+
+==========================================================================
+global place report_checks -path_delay min
+--------------------------------------------------------------------------
+Startpoint: pointer[1]$_SDFFE_PP0P_
+            (rising edge-triggered flip-flop clocked by clk)
+Endpoint: pointer[1]$_SDFFE_PP0P_
+          (rising edge-triggered flip-flop clocked by clk)
+Path Group: clk
+Path Type: min
+
+Fanout     Cap    Slew   Delay    Time   Description
+-----------------------------------------------------------------------------
+                  0.00    0.00    0.00   clock clk (rise edge)
+                          0.00    0.00   clock network delay (ideal)
+                  0.00    0.00    0.00 ^ pointer[1]$_SDFFE_PP0P_/CK (DFF_X1)
+     6   16.71    0.02    0.10    0.10 v pointer[1]$_SDFFE_PP0P_/Q (DFF_X1)
+                                         pointer[1] (net)
+                  0.02    0.00    0.10 v _139_/A2 (NAND3_X1)
+     1    1.95    0.01    0.02    0.12 ^ _139_/ZN (NAND3_X1)
+                                         _066_ (net)
+                  0.01    0.00    0.12 ^ _140_/B2 (AOI21_X1)
+     1    1.40    0.01    0.01    0.14 v _140_/ZN (AOI21_X1)
+                                         _010_ (net)
+                  0.01    0.00    0.14 v pointer[1]$_SDFFE_PP0P_/D (DFF_X1)
+                                  0.14   data arrival time
+
+                  0.00    0.00    0.00   clock clk (rise edge)
+                          0.00    0.00   clock network delay (ideal)
+                          0.00    0.00   clock reconvergence pessimism
+                                  0.00 ^ pointer[1]$_SDFFE_PP0P_/CK (DFF_X1)
+                          0.00    0.00   library hold time
+                                  0.00   data required time
+-----------------------------------------------------------------------------
+                                  0.00   data required time
+                                 -0.14   data arrival time
+-----------------------------------------------------------------------------
+                                  0.14   slack (MET)
+
+
+
+==========================================================================
+global place report_checks -path_delay max
+--------------------------------------------------------------------------
+Startpoint: pointer[1]$_SDFFE_PP0P_
+            (rising edge-triggered flip-flop clocked by clk)
+Endpoint: pointer[0]$_SDFFE_PP0P_
+          (rising edge-triggered flip-flop clocked by clk)
+Path Group: clk
+Path Type: max
+
+Fanout     Cap    Slew   Delay    Time   Description
+-----------------------------------------------------------------------------
+                  0.00    0.00    0.00   clock clk (rise edge)
+                          0.00    0.00   clock network delay (ideal)
+                  0.00    0.00    0.00 ^ pointer[1]$_SDFFE_PP0P_/CK (DFF_X1)
+     4   13.46    0.02    0.09    0.09 v pointer[1]$_SDFFE_PP0P_/QN (DFF_X1)
+                                         _000_ (net)
+                  0.02    0.00    0.09 v _186_/B (HA_X1)
+     3    9.79    0.02    0.07    0.16 v _186_/S (HA_X1)
+                                         _004_ (net)
+                  0.02    0.00    0.16 v _107_/A (INV_X1)
+     4    9.12    0.02    0.04    0.20 ^ _107_/ZN (INV_X1)
+                                         _037_ (net)
+                  0.02    0.00    0.20 ^ _109_/A3 (NAND3_X2)
+     3    9.58    0.02    0.03    0.23 v _109_/ZN (NAND3_X2)
+                                         _038_ (net)
+                  0.02    0.00    0.23 v _110_/B2 (AOI21_X4)
+     6   13.05    0.03    0.04    0.28 ^ _110_/ZN (AOI21_X4)
+                                         _039_ (net)
+                  0.03    0.00    0.28 ^ _116_/A1 (NAND3_X2)
+     1    3.11    0.01    0.02    0.30 v _116_/ZN (NAND3_X2)
+                                         _045_ (net)
+                  0.01    0.00    0.30 v _117_/A (INV_X2)
+     2    8.05    0.01    0.02    0.32 ^ _117_/ZN (INV_X2)
+                                         _046_ (net)
+                  0.01    0.00    0.32 ^ _120_/A (OAI21_X4)
+     7   22.73    0.02    0.03    0.35 v _120_/ZN (OAI21_X4)
+                                         _048_ (net)
+                  0.02    0.00    0.35 v _148_/A1 (NAND2_X2)
+     5   10.95    0.02    0.03    0.38 ^ _148_/ZN (NAND2_X2)
+                                         _073_ (net)
+                  0.02    0.00    0.38 ^ _157_/A2 (NAND3_X1)
+     1    1.81    0.01    0.02    0.40 v _157_/ZN (NAND3_X1)
+                                         _081_ (net)
+                  0.01    0.00    0.40 v _159_/A1 (NAND2_X1)
+     1    3.35    0.01    0.02    0.42 ^ _159_/ZN (NAND2_X1)
+                                         _083_ (net)
+                  0.01    0.00    0.42 ^ _161_/A1 (NOR2_X2)
+     1    1.28    0.01    0.01    0.43 v _161_/ZN (NOR2_X2)
+                                         _009_ (net)
+                  0.01    0.00    0.43 v pointer[0]$_SDFFE_PP0P_/D (DFF_X1)
+                                  0.43   data arrival time
+
+                  0.00   10.00   10.00   clock clk (rise edge)
+                          0.00   10.00   clock network delay (ideal)
+                          0.00   10.00   clock reconvergence pessimism
+                                 10.00 ^ pointer[0]$_SDFFE_PP0P_/CK (DFF_X1)
+                         -0.04    9.96   library setup time
+                                  9.96   data required time
+-----------------------------------------------------------------------------
+                                  9.96   data required time
+                                 -0.43   data arrival time
+-----------------------------------------------------------------------------
+                                  9.53   slack (MET)
+
+
+
+==========================================================================
+global place report_checks -unconstrained
+--------------------------------------------------------------------------
+Startpoint: pointer[1]$_SDFFE_PP0P_
+            (rising edge-triggered flip-flop clocked by clk)
+Endpoint: pointer[0]$_SDFFE_PP0P_
+          (rising edge-triggered flip-flop clocked by clk)
+Path Group: clk
+Path Type: max
+
+Fanout     Cap    Slew   Delay    Time   Description
+-----------------------------------------------------------------------------
+                  0.00    0.00    0.00   clock clk (rise edge)
+                          0.00    0.00   clock network delay (ideal)
+                  0.00    0.00    0.00 ^ pointer[1]$_SDFFE_PP0P_/CK (DFF_X1)
+     4   13.46    0.02    0.09    0.09 v pointer[1]$_SDFFE_PP0P_/QN (DFF_X1)
+                                         _000_ (net)
+                  0.02    0.00    0.09 v _186_/B (HA_X1)
+     3    9.79    0.02    0.07    0.16 v _186_/S (HA_X1)
+                                         _004_ (net)
+                  0.02    0.00    0.16 v _107_/A (INV_X1)
+     4    9.12    0.02    0.04    0.20 ^ _107_/ZN (INV_X1)
+                                         _037_ (net)
+                  0.02    0.00    0.20 ^ _109_/A3 (NAND3_X2)
+     3    9.58    0.02    0.03    0.23 v _109_/ZN (NAND3_X2)
+                                         _038_ (net)
+                  0.02    0.00    0.23 v _110_/B2 (AOI21_X4)
+     6   13.05    0.03    0.04    0.28 ^ _110_/ZN (AOI21_X4)
+                                         _039_ (net)
+                  0.03    0.00    0.28 ^ _116_/A1 (NAND3_X2)
+     1    3.11    0.01    0.02    0.30 v _116_/ZN (NAND3_X2)
+                                         _045_ (net)
+                  0.01    0.00    0.30 v _117_/A (INV_X2)
+     2    8.05    0.01    0.02    0.32 ^ _117_/ZN (INV_X2)
+                                         _046_ (net)
+                  0.01    0.00    0.32 ^ _120_/A (OAI21_X4)
+     7   22.73    0.02    0.03    0.35 v _120_/ZN (OAI21_X4)
+                                         _048_ (net)
+                  0.02    0.00    0.35 v _148_/A1 (NAND2_X2)
+     5   10.95    0.02    0.03    0.38 ^ _148_/ZN (NAND2_X2)
+                                         _073_ (net)
+                  0.02    0.00    0.38 ^ _157_/A2 (NAND3_X1)
+     1    1.81    0.01    0.02    0.40 v _157_/ZN (NAND3_X1)
+                                         _081_ (net)
+                  0.01    0.00    0.40 v _159_/A1 (NAND2_X1)
+     1    3.35    0.01    0.02    0.42 ^ _159_/ZN (NAND2_X1)
+                                         _083_ (net)
+                  0.01    0.00    0.42 ^ _161_/A1 (NOR2_X2)
+     1    1.28    0.01    0.01    0.43 v _161_/ZN (NOR2_X2)
+                                         _009_ (net)
+                  0.01    0.00    0.43 v pointer[0]$_SDFFE_PP0P_/D (DFF_X1)
+                                  0.43   data arrival time
+
+                  0.00   10.00   10.00   clock clk (rise edge)
+                          0.00   10.00   clock network delay (ideal)
+                          0.00   10.00   clock reconvergence pessimism
+                                 10.00 ^ pointer[0]$_SDFFE_PP0P_/CK (DFF_X1)
+                         -0.04    9.96   library setup time
+                                  9.96   data required time
+-----------------------------------------------------------------------------
+                                  9.96   data required time
+                                 -0.43   data arrival time
+-----------------------------------------------------------------------------
+                                  9.53   slack (MET)
+
+
+
+==========================================================================
+global place report_power
+--------------------------------------------------------------------------
+Group                  Internal  Switching    Leakage      Total
+                          Power      Power      Power      Power (Watts)
+----------------------------------------------------------------
+Sequential             2.48e-06   2.91e-06   1.57e-07   5.55e-06   8.3%
+Combinational          2.91e-05   2.87e-05   3.31e-06   6.12e-05  91.7%
+Clock                  0.00e+00   0.00e+00   0.00e+00   0.00e+00   0.0%
+Macro                  0.00e+00   0.00e+00   0.00e+00   0.00e+00   0.0%
+Pad                    0.00e+00   0.00e+00   0.00e+00   0.00e+00   0.0%
+----------------------------------------------------------------
+Total                  3.16e-05   3.16e-05   3.47e-06   6.67e-05 100.0%
+                          47.4%      47.4%       5.2%
